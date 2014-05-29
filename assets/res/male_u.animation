@@ -1,0 +1,28 @@
+animation animations
+{
+    frameCount = 166
+	clip idle
+    {
+        begin = 1
+        end = 111
+        repeatCount = INDEFINITE
+    }
+    clip walking
+    {
+        begin = 114
+        end = 138
+        repeatCount = INDEFINITE
+    }
+    clip running
+    {
+        begin = 141
+        end = 166
+        repeatCount = INDEFINITE
+    }
+    clip all
+    {
+        begin = 1
+        end = 166
+        repeatCount = INDEFINITE
+    }
+}
