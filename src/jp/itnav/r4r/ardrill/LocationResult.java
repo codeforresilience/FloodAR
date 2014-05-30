@@ -79,7 +79,11 @@ public class LocationResult extends Timer {
 							mDistance = makeDistance(onceLatitude,
 									onceLongitude, mLatitude, mLongitude, 7) * 1000;
 							if (mDistance != prevDistance) {
+<<<<<<< HEAD
 								prevDistance = mDistance;
+=======
+								mDistance = prevDistance;
+>>>>>>> 349128e304d4cdff93304cd127cd0c7822f3777b
 								if (listener != null) {
 									listener.onChangedSpeed(mDistance);
 								}
