@@ -53,11 +53,12 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	private LocationResult mLocationResult;
 	RelativeLayout warningDialog;
 	private float mAgeSpeed;
+
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.ardrill);
-		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		WakeLock lock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My tag");
 		lock.acquire();
 
@@ -66,20 +67,20 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 		int avatarType = intent.getIntExtra("Gender",
 				ARdrillJNIView.AVATAR_TYPE_MALE);
 		mView = new ARdrillJNIView(getApplication(), true, 24, 0, avatarType);
-		
-		//ft. →　cm
-		float height = intent.getFloatExtra("Height", 5.0f)*30.48f;
-		float sheight = 10 - (height/50);
-		mView.setWaterLevel(sheight*10);
-		
+
+		// ft. →　cm
+		float height = intent.getFloatExtra("Height", 5.0f) * 30.48f;
+		float sheight = 10 - (height / 50);
+		mView.setWaterLevel(sheight * 10);
+
 		int age = intent.getIntExtra("Age", 20);
 		mAgeSpeed = AgeSpeed.getSpeed(age);
-		mView.setAnimatioSpeed(0.1f);
+		mView.setAnimatioSpeed(0.2f);
 
 		mView.setZOrderMediaOverlay(true);
 		addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT));
-		
+
 		setupSensors();
 
 		mLocationResult = new LocationResult(this, 1000);
@@ -90,7 +91,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	private boolean FLAG = false;
 
 	void showWarning() {
-		Log.v("warnig","OK津田");
+		Log.v("warnig", "OK津田");
 		warningDialog = new RelativeLayout(this);
 		warningDialog.setBackgroundColor(Color.RED);
 		warningDialog.setAlpha(0.5f);
@@ -113,7 +114,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	}
 
 	private void deleteWarning() {
-		Log.v("deletewarnig","OK津田");
+		Log.v("deletewarnig", "OK津田");
 		warningDialog.setVisibility(View.INVISIBLE);
 		FLAG = false;
 	}
@@ -149,6 +150,8 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 
 	}
 
+	int count = 0;
+
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
@@ -171,27 +174,31 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 			// mView.setCameraAxis(
 			// event.values[1] - mGravity[1] * SENSITIVITY,
 			// event.values[0] - mGravity[0] * SENSITIVITY, 0);
-			
+
+			//warning
 			if (mLocationResult.getDistace() > 1.5) {
+				
 				if (FLAG == false) {
-					showWarning();
+						showWarning();
 					FLAG = true;
 				}
+				//delete warnig
 			} else {
-				mView.setAnimatioSpeed( ((float)mLocationResult.getDistace()+mAgeSpeed) - 0.3f);
 				if (FLAG == true) {
 					deleteWarning();
 					FLAG = false;
 				}
+
+				if (mLocationResult.getDistace() == 0.0) {
+				}
 			}
-			
+
 			if (mLocationResult.Goal() == true) {
 				mLocationResult.stop();
 				MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
 				mcd.start();
 			}
-			
-			
+
 		}
 
 	}

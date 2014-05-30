@@ -136,12 +136,7 @@ class ARdrillJNIView extends GLSurfaceView {
     	this.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				currentAnimation++;
-				if (currentAnimation >= ANIMATION_NUM) {
-					currentAnimation = ANIMATION_ALL;
-				}
-				ARdrillJNILib.setAnimationNumber(currentAnimation);
-		    	ARdrillJNILib.setAnimationSpeed(animationSpeed);
+				
 			}
 		});
 
