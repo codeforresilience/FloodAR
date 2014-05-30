@@ -21,13 +21,16 @@ public class LocationResult extends Timer {
 	private Timer mTimer = this;
 	private MyLocation mLocation;
 	private LocationResultListener listener;
-	
+
 	static final double TOO_FAST_SPEED_DISTANCE = 0;
-	
+
 	public interface LocationResultListener {
 		public void onReachedGoal();
+
 		public void showTooFastWarning();
+
 		public void deleteTooFastWarning();
+
 		public void onChangedSpeed(double distance);
 	}
 
@@ -44,11 +47,11 @@ public class LocationResult extends Timer {
 	private MySQLite sqlite;
 	private int playtime = 0;
 	private boolean GOAL = false;
-	
+
 	public void setListener(LocationResultListener listener) {
 		this.listener = listener;
 	}
-	
+
 	public void start() {
 		sqlite = new MySQLite(mContext);
 		sqlite.Delete(mContext);
@@ -76,6 +79,7 @@ public class LocationResult extends Timer {
 							mDistance = makeDistance(onceLatitude,
 									onceLongitude, mLatitude, mLongitude, 7) * 1000;
 							if (mDistance != prevDistance) {
+								prevDistance = mDistance;
 								if (listener != null) {
 									listener.onChangedSpeed(mDistance);
 								}
@@ -114,12 +118,12 @@ public class LocationResult extends Timer {
 		}, 0, mInterval);
 
 	}
-	
-	public double getDistace(){
+
+	public double getDistace() {
 		return mDistance;
 	}
-	
-	public boolean Goal(){
+
+	public boolean Goal() {
 		return GOAL;
 	}
 
