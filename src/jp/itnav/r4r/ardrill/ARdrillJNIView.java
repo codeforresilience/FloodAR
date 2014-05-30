@@ -115,7 +115,7 @@ class ARdrillJNIView extends GLSurfaceView {
         ARdrillJNILib.setWaterLevel(waterLevel);
     }
     
-    public void setAnimatioSpeed(float speed) {
+    public void setAnimationSpeed(float speed) {
     	animationSpeed = speed;
     	ARdrillJNILib.setAnimationSpeed(animationSpeed);
     }

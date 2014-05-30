@@ -42,7 +42,7 @@ import android.content.Intent;
 
 import java.io.File;
 
-public class ARdrillActivity extends Activity implements SensorEventListener {
+public class ARdrillActivity extends Activity implements SensorEventListener, LocationResult.LocationResultListener {
 
 	private SensorManager mSensorManager;
 	ARdrillJNIView mView;
@@ -71,13 +71,14 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 
 		int age = intent.getIntExtra("Age", 20);
 		mAgeSpeed = AgeSpeed.getSpeed(age);
-		mView.setAnimatioSpeed(0.2f);
+		mView.setAnimationSpeed(0.2f);
 
 		mView.setZOrderMediaOverlay(true);
 		addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT));
 
 		mLocationResult = new LocationResult(this, 1000);
+		mLocationResult.setListener(this);
 		mLocationResult.start();
 
 	}
@@ -191,12 +192,6 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 				}
 			}
 
-			if (mLocationResult.Goal() == true) {
-				mLocationResult.stop();
-				MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
-				mcd.start();
-			}
-
 //		}
 
 	}
@@ -239,6 +234,13 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 		@Override
 		public void onTick(long millisUntilFinished) {
 		}
+	}
+
+	@Override
+	public void onReachedGoal() {
+		mLocationResult.stop();
+		MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
+		mcd.start();
 	}
 
 }
