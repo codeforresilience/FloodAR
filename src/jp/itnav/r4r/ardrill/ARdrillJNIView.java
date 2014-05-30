@@ -67,6 +67,10 @@ class ARdrillJNIView extends GLSurfaceView {
         init(translucent, depth, stencil, avatarType);
     }
 
+    public boolean getPreserveEGLContextOnPause() {
+    	return true;
+    }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
     	super.onWindowFocusChanged(hasFocus);
