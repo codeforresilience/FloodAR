@@ -32,7 +32,7 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 	private RadioGroup radioGroup;
 	private RadioButton radioButton;
 	private String mInputAge;
-	private String mInputHeight;
+	private float mInputHeight;
 	private int mInputGender;
 	private Button button;
 
@@ -105,14 +105,15 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 			editAge.selectAll();
 			mInputAge = editAge.getText().toString();
 			editHeight.selectAll();
-			mInputHeight = editHeight.getText().toString();
+			mInputHeight = Float.parseFloat((editHeight.getText().toString()));
+			
 			Intent intent = new Intent(this, ARdrillActivity.class);
 			intent.putExtra("Gender", mInputGender);
 			intent.putExtra("Age", mInputAge);
 			intent.putExtra("Height", mInputHeight);
 
 			try {
-				if (mInputAge.equals("") || mInputHeight.equals("")
+				if (mInputAge.equals("") || mInputHeight==0.0
 						||loadPreferences("goallatitude").equals("nodata")
 						||loadPreferences("goallongitude").equals("nodata")) {
 					

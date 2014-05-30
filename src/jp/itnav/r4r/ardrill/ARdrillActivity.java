@@ -60,13 +60,18 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 		int avatarType = intent.getIntExtra("Gender",
 				ARdrillJNIView.AVATAR_TYPE_MALE);
 		mView = new ARdrillJNIView(getApplication(), true, 24, 0, avatarType);
-		mView.setWaterLevel(50.0f);
+		
+		//ft. →　cm
+		float height = intent.getFloatExtra("Height", 5.0f)*30.48f;
+		float sheight = 10 - (height/50);
+		mView.setWaterLevel(sheight*10);
+		
 		mView.setAnimatioSpeed(0.8f);
 
 		mView.setZOrderMediaOverlay(true);
 		addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT));
-
+		
 		setupSensors();
 
 		mLocationResult = new LocationResult(this, 1000);
