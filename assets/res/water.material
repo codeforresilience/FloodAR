@@ -30,7 +30,7 @@ material water
             // render state
             renderState
             {
-                cullFace = true
+                cullFace = false
                 depthTest = true
             }
         }
