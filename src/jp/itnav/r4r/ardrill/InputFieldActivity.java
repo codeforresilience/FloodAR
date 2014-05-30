@@ -42,7 +42,6 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_input_field);
 
 		editAge = (EditText) findViewById(R.id.ageEditText);
-
 		editHeight = (EditText) findViewById(R.id.heightEditText);
 		editHeight
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -64,7 +63,6 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 						return false;
 					}
 				});
-
 		radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
 		radioButton = (RadioButton) findViewById(radioGroup
 				.getCheckedRadioButtonId());
@@ -114,22 +112,18 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 			intent.putExtra("Height", mInputHeight);
 
 			try {
-				if (mInputAge != null && mInputHeight != null) {
-					SharedPreferences sp = PreferenceManager
-							.getDefaultSharedPreferences(this);
-					sp.edit().remove("playtime").commit();
+				if (mInputAge.equals("") || mInputHeight.equals("")
+						||loadPreferences("goallatitude").equals("nodata")
+						||loadPreferences("goallongitude").equals("nodata")) {
 					
-					
-					Log.v("goalPotisionLatitude", String.valueOf(Double
-							.parseDouble(loadPreferences("goallatitude"))));
-					Log.v("goalPotisionLongitude", String.valueOf(Double
-							.parseDouble(loadPreferences("goallongitude"))));
-					
-					startActivityForResult(intent, 0);
-				} else {
 					Toast.makeText(this,
 							"Error There are missing fields. Back",
 							Toast.LENGTH_LONG).show();
+				} else {
+					SharedPreferences sp = PreferenceManager
+							.getDefaultSharedPreferences(this);
+					sp.edit().remove("playtime").commit();
+					startActivityForResult(intent, 0);
 				}
 			} catch (NullPointerException e) {
 				Toast.makeText(this, "Error There are missing fields. Back",
