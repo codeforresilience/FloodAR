@@ -72,9 +72,11 @@ class ARdrillJNIView extends GLSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
     private Context context;
+    private float waterLevel = 50.0f;
+    private float animationSpeed = -1.0f;
 
-      static final int AVATAR_TYPE_MALE = 0;
-      static final int AVATAR_TYPE_FEMALE = 1;
+    static final int AVATAR_TYPE_MALE = 0;
+    static final int AVATAR_TYPE_FEMALE = 1;
     
     public ARdrillJNIView(Context context) {
         super(context);
@@ -108,6 +110,16 @@ class ARdrillJNIView extends GLSurfaceView {
         ARdrillJNILib.resume();
     }
     
+    public void setWaterLevel(float level) {
+    	waterLevel = level;
+        ARdrillJNILib.setWaterLevel(waterLevel);
+    }
+    
+    public void setAnimatioSpeed(float speed) {
+    	animationSpeed = speed;
+    	ARdrillJNILib.setAnimationSpeed(animationSpeed);
+    }
+    
     public void setCameraAxis(float x, float y, float z, float w) {
     	ARdrillJNILib.setCameraAxis(x, y, z, w);
     }
@@ -129,6 +141,7 @@ class ARdrillJNIView extends GLSurfaceView {
 					currentAnimation = ANIMATION_ALL;
 				}
 				ARdrillJNILib.setAnimationNumber(currentAnimation);
+		    	ARdrillJNILib.setAnimationSpeed(animationSpeed);
 			}
 		});
 
@@ -160,6 +173,7 @@ class ARdrillJNIView extends GLSurfaceView {
         String extDirPath = extDir.getPath();
         AssetManager assetManager = context.getAssets();
         ARdrillJNILib.setUp(extDirPath, assetManager, avatarType);
+        ARdrillJNILib.setWaterLevel(waterLevel);
 
         Renderer renderer = new Renderer();
         setRenderer(renderer);
