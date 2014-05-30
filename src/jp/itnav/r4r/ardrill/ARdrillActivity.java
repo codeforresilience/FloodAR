@@ -174,7 +174,10 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 			// mView.setCameraAxis(
 			// event.values[1] - mGravity[1] * SENSITIVITY,
 			// event.values[0] - mGravity[0] * SENSITIVITY, 0);
-
+			
+			/*mLocationResult.getDistace() でスピードを取得
+			 * スピードによって、歩く、止まる、警告アラートを表示
+			 * */
 			//warning
 			if (mLocationResult.getDistace() > 1.5) {
 				
