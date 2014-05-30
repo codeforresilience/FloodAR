@@ -31,7 +31,7 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 	private EditText editHeight;
 	private RadioGroup radioGroup;
 	private RadioButton radioButton;
-	private String mInputAge;
+	private int mInputAge;
 	private float mInputHeight;
 	private int mInputGender;
 	private Button button;
@@ -102,8 +102,10 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.startButton:
+			try {
 			editAge.selectAll();
-			mInputAge = editAge.getText().toString();
+			mInputAge = Integer.parseInt(editAge.getText().toString());
+			
 			editHeight.selectAll();
 			mInputHeight = Float.parseFloat((editHeight.getText().toString()));
 			
@@ -111,9 +113,7 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 			intent.putExtra("Gender", mInputGender);
 			intent.putExtra("Age", mInputAge);
 			intent.putExtra("Height", mInputHeight);
-
-			try {
-				if (mInputAge.equals("") || mInputHeight==0.0
+				if (mInputAge==0 || mInputHeight==0.0
 						||loadPreferences("goallatitude").equals("nodata")
 						||loadPreferences("goallongitude").equals("nodata")) {
 					

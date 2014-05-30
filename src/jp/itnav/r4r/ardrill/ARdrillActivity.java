@@ -50,7 +50,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	ARdrillJNIView mView;
 	private LocationResult mLocationResult;
 	RelativeLayout warningDialog;
-
+	private float mAgeSpeed;
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -66,7 +66,9 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 		float sheight = 10 - (height/50);
 		mView.setWaterLevel(sheight*10);
 		
-		mView.setAnimatioSpeed(0.8f);
+		int age = intent.getIntExtra("Age", 20);
+		mAgeSpeed = AgeSpeed.getSpeed(age);
+		mView.setAnimatioSpeed(0.1f);
 
 		mView.setZOrderMediaOverlay(true);
 		addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -163,22 +165,27 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 			// mView.setCameraAxis(
 			// event.values[1] - mGravity[1] * SENSITIVITY,
 			// event.values[0] - mGravity[0] * SENSITIVITY, 0);
-			if (mLocationResult.Goal() == true) {
-				mLocationResult.stop();
-				MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
-				mcd.start();
-			}
+			
 			if (mLocationResult.getDistace() > 1.5) {
 				if (FLAG == false) {
 					showWarning();
 					FLAG = true;
 				}
 			} else {
+				mView.setAnimatioSpeed( ((float)mLocationResult.getDistace()+mAgeSpeed) - 0.3f);
 				if (FLAG == true) {
 					deleteWarning();
 					FLAG = false;
 				}
 			}
+			
+			if (mLocationResult.Goal() == true) {
+				mLocationResult.stop();
+				MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
+				mcd.start();
+			}
+			
+			
 		}
 
 	}
