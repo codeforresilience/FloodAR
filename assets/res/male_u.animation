@@ -3,7 +3,7 @@ animation animations
     frameCount = 166
 	clip idle
     {
-        begin = 1
+        begin = 26
         end = 111
         repeatCount = INDEFINITE
     }
