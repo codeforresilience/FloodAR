@@ -20,6 +20,11 @@ public class LocationResult extends Timer {
 	private int mInterval;
 	private Timer mTimer = this;
 	private MyLocation mLocation;
+	private LocationResultListener listener;
+	
+	public interface LocationResultListener {
+		public void onReachedGoal();
+	}
 
 	public LocationResult(Context context, int interval) {
 		this.mContext = context;
@@ -33,6 +38,10 @@ public class LocationResult extends Timer {
 	private MySQLite sqlite;
 	private int playtime = 0;
 	private boolean GOAL = false;
+	
+	public void setListener(LocationResultListener listener) {
+		this.listener = listener;
+	}
 	
 	public void start() {
 		sqlite = new MySQLite(mContext);
@@ -65,7 +74,9 @@ public class LocationResult extends Timer {
 									goalPotision().latitude,
 									goalPotision().longitude) == true) {
 								GOAL = true;
-								
+								if (listener != null) {
+									listener.onReachedGoal();
+								}
 							}
 						}
 					}
