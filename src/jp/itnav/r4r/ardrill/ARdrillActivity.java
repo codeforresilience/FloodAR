@@ -44,11 +44,7 @@ import java.io.File;
 
 public class ARdrillActivity extends Activity implements SensorEventListener {
 
-	private static final float ALPHA = 0.8f;
-	private static final int SENSITIVITY = 5;
-
 	private SensorManager mSensorManager;
-	private float mGravity[];
 	ARdrillJNIView mView;
 	private LocationResult mLocationResult;
 	RelativeLayout warningDialog;
@@ -80,8 +76,6 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 		mView.setZOrderMediaOverlay(true);
 		addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT));
-
-		setupSensors();
 
 		mLocationResult = new LocationResult(this, 1000);
 		mLocationResult.start();
@@ -120,11 +114,19 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	}
 
 	void setupSensors() {
-		mGravity = new float[3];
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mSensorManager.registerListener(this, mSensorManager
-				.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
-				SensorManager.SENSOR_DELAY_FASTEST);
+		mSensorManager = (SensorManager)getSystemService(
+				Context.SENSOR_SERVICE);
+		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR) != null) {
+			Log.i("ARdrillActivity", "TYPE_GAME_ROTATION_VECTOR was found.");
+			mSensorManager.registerListener(this,
+					mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
+					SensorManager.SENSOR_DELAY_FASTEST);
+		} else if (mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) != null) {
+			Log.i("ARdrillActivity", "TYPE_ROTATION_VECTOR was found.");
+			mSensorManager.registerListener(this,
+					mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+					SensorManager.SENSOR_DELAY_FASTEST);
+		}
 	}
 
 	@Override
@@ -135,6 +137,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
+        mSensorManager.unregisterListener(this);
 		mView.onPause();
 	}
 
@@ -142,6 +145,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	protected void onResume() {
 		super.onResume();
 		mView.onResume();
+        setupSensors();
 	}
 
 	@Override
@@ -152,28 +156,19 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 
 	int count = 0;
 
+	private float q[] = new float[4];
+	
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		// q is stored as [w, x, y, z]
 		if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
-			// mGravity[0] = ALPHA * mGravity[0] + (1 - ALPHA) *
-			// event.values[0];
-			// mGravity[1] = ALPHA * mGravity[1] + (1 - ALPHA) *
-			// event.values[1];
-			// mGravity[2] = ALPHA * mGravity[2] + (1 - ALPHA) *
-			// event.values[2];
-
-			mGravity[0] = event.values[0];
-			mGravity[1] = event.values[1];
-			mGravity[2] = event.values[2];
-
-			float q[] = new float[4];
-
 			SensorManager.getQuaternionFromVector(q, event.values);
-			// Log.i("ARdrill", "q[0]=" + q[0]);
-			mView.setCameraAxis(-q[0], -q[1], q[2], q[3]);
-			// mView.setCameraAxis(
-			// event.values[1] - mGravity[1] * SENSITIVITY,
-			// event.values[0] - mGravity[0] * SENSITIVITY, 0);
+			mView.setCameraAxis(q[2], q[1], q[3], q[0]);
+		} else if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+			SensorManager.getQuaternionFromVector(q, event.values);
+			mView.setCameraAxis(q[2], q[1], q[3], q[0]);
+		}
+//		if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
 			
 			/*mLocationResult.getDistace() でスピードを取得
 			 * スピードによって、歩く、止まる、警告アラートを表示
@@ -202,7 +197,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 				mcd.start();
 			}
 
-		}
+//		}
 
 	}
 
