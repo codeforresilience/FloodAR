@@ -26,6 +26,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -55,6 +57,10 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.ardrill);
+		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+		WakeLock lock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My tag");
+		lock.acquire();
+
 		Intent intent = getIntent();
 
 		int avatarType = intent.getIntExtra("Gender",
