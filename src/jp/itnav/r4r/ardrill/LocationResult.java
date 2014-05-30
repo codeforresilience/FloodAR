@@ -22,7 +22,7 @@ public class LocationResult extends Timer {
 	private MyLocation mLocation;
 	private LocationResultListener listener;
 
-	static final double TOO_FAST_SPEED_DISTANCE = 0;
+	static final double TOO_FAST_SPEED_DISTANCE = 1.5;
 
 	public interface LocationResultListener {
 		public void onReachedGoal();
@@ -80,9 +80,8 @@ public class LocationResult extends Timer {
 									onceLongitude, mLatitude, mLongitude, 7) * 1000;
 							if (mDistance != prevDistance) {
 
-								 mDistance = prevDistance;
+								 prevDistance = mDistance;
 
-								mDistance = prevDistance;
 
 								if (listener != null) {
 									listener.onChangedSpeed(mDistance);

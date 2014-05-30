@@ -209,7 +209,6 @@ public class ARdrillActivity extends Activity implements SensorEventListener, Lo
 	}
 
 	private void setAnimation(double distance) {
-		Log.v("setAnimation distance",String.valueOf(distance));
 		if (distance < 0.01) {
 			mView.setAnimationNumber(ARdrillJNIView.ANIMATION_IDLE);
 		} else if (distance < 1.0) {
@@ -252,6 +251,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener, Lo
 			public void run() {
 				Log.v("onChangedSpeed distance",String.valueOf(distance));
 				setAnimation(distance);
+				mView.setAnimationSpeed((float)distance+mAgeSpeed);
 			}
 		});
 	}
