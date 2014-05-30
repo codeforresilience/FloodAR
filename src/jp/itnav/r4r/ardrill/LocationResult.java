@@ -22,8 +22,13 @@ public class LocationResult extends Timer {
 	private MyLocation mLocation;
 	private LocationResultListener listener;
 	
+	static final double TOO_FAST_SPEED_DISTANCE = 0;
+	
 	public interface LocationResultListener {
 		public void onReachedGoal();
+		public void showTooFastWarning();
+		public void deleteTooFastWarning();
+		public void onChangedSpeed(double distance);
 	}
 
 	public LocationResult(Context context, int interval) {
@@ -35,6 +40,7 @@ public class LocationResult extends Timer {
 	private double onceLatitude = 0.0;
 	private double onceLongitude = 0.0;
 	private double mDistance = 0.0;
+	private double prevDistance = -1;
 	private MySQLite sqlite;
 	private int playtime = 0;
 	private boolean GOAL = false;
@@ -69,6 +75,20 @@ public class LocationResult extends Timer {
 											7) * 1000);
 							mDistance = makeDistance(onceLatitude,
 									onceLongitude, mLatitude, mLongitude, 7) * 1000;
+							if (mDistance != prevDistance) {
+								if (listener != null) {
+									listener.onChangedSpeed(mDistance);
+								}
+							}
+							if (mDistance >= TOO_FAST_SPEED_DISTANCE) {
+								if (listener != null) {
+									listener.showTooFastWarning();
+								}
+							} else {
+								if (listener != null) {
+									listener.deleteTooFastWarning();
+								}
+							}
 							// Judge Goal
 							if (goalJudge(result.latitude, result.longitude,
 									goalPotision().latitude,

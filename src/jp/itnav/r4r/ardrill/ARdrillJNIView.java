@@ -75,6 +75,13 @@ class ARdrillJNIView extends GLSurfaceView {
     private float waterLevel = 50.0f;
     private float animationSpeed = -1.0f;
 
+    static final int ANIMATION_ALL = 0;
+    static final int ANIMATION_IDLE = 1;
+    static final int ANIMATION_WALK = 2;
+    static final int ANIMATION_RUN  = 3;
+    static final int ANIMATION_NUM  = 4;
+    private int currentAnimation = -1;
+
     static final int AVATAR_TYPE_MALE = 0;
     static final int AVATAR_TYPE_FEMALE = 1;
     
@@ -115,6 +122,14 @@ class ARdrillJNIView extends GLSurfaceView {
         ARdrillJNILib.setWaterLevel(waterLevel);
     }
     
+    public void setAnimationNumber(int number) {
+    	if (currentAnimation != number) {
+    		currentAnimation = number;
+    		ARdrillJNILib.setAnimationNumber(number);
+    		ARdrillJNILib.setAnimationSpeed(animationSpeed);
+    	}
+    }
+    
     public void setAnimationSpeed(float speed) {
     	animationSpeed = speed;
     	ARdrillJNILib.setAnimationSpeed(animationSpeed);
@@ -123,13 +138,6 @@ class ARdrillJNIView extends GLSurfaceView {
     public void setCameraAxis(float x, float y, float z, float w) {
     	ARdrillJNILib.setCameraAxis(x, y, z, w);
     }
-    
-    static final int ANIMATION_ALL = 0;
-    static final int ANIMATION_IDLE = 1;
-    static final int ANIMATION_WALK = 2;
-    static final int ANIMATION_RUN  = 3;
-    static final int ANIMATION_NUM  = 4;
-    private int currentAnimation = 0;
     
     private void init(boolean translucent, int depth, int stencil, int avatarType)  {
     	
@@ -168,6 +176,7 @@ class ARdrillJNIView extends GLSurfaceView {
         String extDirPath = extDir.getPath();
         AssetManager assetManager = context.getAssets();
         ARdrillJNILib.setUp(extDirPath, assetManager, avatarType);
+        setAnimationNumber(ANIMATION_IDLE);
         ARdrillJNILib.setWaterLevel(waterLevel);
 
         Renderer renderer = new Renderer();

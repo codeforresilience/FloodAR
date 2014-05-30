@@ -63,6 +63,7 @@ public class ARdrillActivity extends Activity implements SensorEventListener, Lo
 		int avatarType = intent.getIntExtra("Gender",
 				ARdrillJNIView.AVATAR_TYPE_MALE);
 		mView = new ARdrillJNIView(getApplication(), true, 24, 0, avatarType);
+		setAnimation(0);
 
 		// ft. →　cm
 		float height = intent.getFloatExtra("Height", 5.0f) * 30.48f;
@@ -169,31 +170,6 @@ public class ARdrillActivity extends Activity implements SensorEventListener, Lo
 			SensorManager.getQuaternionFromVector(q, event.values);
 			mView.setCameraAxis(q[2], q[1], q[3], q[0]);
 		}
-//		if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
-			
-			/*mLocationResult.getDistace() でスピードを取得
-			 * スピードによって、歩く、止まる、警告アラートを表示
-			 * */
-			//warning
-			if (mLocationResult.getDistace() > 1.5) {
-				
-				if (FLAG == false) {
-						showWarning();
-					FLAG = true;
-				}
-				//delete warnig
-			} else {
-				if (FLAG == true) {
-					deleteWarning();
-					FLAG = false;
-				}
-
-				if (mLocationResult.getDistace() == 0.0) {
-				}
-			}
-
-//		}
-
 	}
 
 	@Override
@@ -238,9 +214,60 @@ public class ARdrillActivity extends Activity implements SensorEventListener, Lo
 
 	@Override
 	public void onReachedGoal() {
-		mLocationResult.stop();
-		MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
-		mcd.start();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				mLocationResult.stop();
+				MyCountDownTimer mcd = new MyCountDownTimer(1500, 500);
+				mcd.start();
+			}
+		});
+	}
+
+	private void setAnimation(double distance) {
+		if (distance < 0.01) {
+			mView.setAnimationNumber(ARdrillJNIView.ANIMATION_IDLE);
+		} else if (distance < 1.0) {
+			mView.setAnimationNumber(ARdrillJNIView.ANIMATION_WALK);
+		} else if (distance < 1.5) {
+			mView.setAnimationNumber(ARdrillJNIView.ANIMATION_RUN);
+		}
+	}
+	
+	@Override
+	public void showTooFastWarning() {
+		if (FLAG == false) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					showWarning();
+				}
+			});
+			FLAG = true;
+		}
+	}
+
+	@Override
+	public void deleteTooFastWarning() {
+		if (FLAG == true) {
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					deleteWarning();
+				}
+			});
+			FLAG = false;
+		}
+	}
+
+	@Override
+	public void onChangedSpeed(final double distance) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				setAnimation(distance);
+			}
+		});
 	}
 
 }
